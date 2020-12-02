@@ -21,6 +21,14 @@ RIGHT = 'right'
 VAL = 'val'
 VALUE = 'value'
 
+def _is_sortable(obj):
+    """Check if obj is sortable
+    
+    :param obj: Object to be used a node value
+    :type obj: Any sortable class
+    :return: True if object is sortable, False otherwise.
+    :rtype: bool"""
+    return hasattr(obj,"__lt__") and hasattr(obj,"__gt__")
 
 def _is_balanced(root):
     """Return the tree height + 1 if balanced, -1 otherwise.
@@ -381,7 +389,7 @@ class Node(object):
     well as all its descendants.
 
     :param value: Node value (must be a number).
-    :type value: int | float | numbers.Number
+    :type value: int | float | any sortable object
     :param left: Left child node (default: None).
     :type left: binarytree.Node
     :param right: Right child node (default: None).
@@ -393,8 +401,8 @@ class Node(object):
     """
 
     def __init__(self, value, left=None, right=None):
-        if not isinstance(value, numbers.Number):
-            raise NodeValueError('node value must be a number')
+        if not _is_sortable(value):
+            raise NodeValueError('node value must be sortable')
         if left is not None and not isinstance(left, Node):
             raise NodeTypeError('left child must be a Node instance')
         if right is not None and not isinstance(right, Node):
@@ -500,11 +508,11 @@ class Node(object):
             if obj is not None and not isinstance(obj, Node):
                 raise NodeTypeError('right child must be a Node instance')
         elif attr == VALUE:
-            if not isinstance(obj, numbers.Number):
-                raise NodeValueError('node value must be a number')
+            if not  _is_sortable(obj):
+                raise NodeValueError('node value must be sortable')
             object.__setattr__(self, VAL, obj)
         elif attr == VAL:
-            if not isinstance(obj, numbers.Number):
+            if not  _is_sortable(obj):
                 raise NodeValueError('node value must be a number')
             object.__setattr__(self, VALUE, obj)
 
@@ -872,9 +880,9 @@ class Node(object):
                     if not isinstance(node, Node):
                         raise NodeTypeError(
                             'invalid node instance at index {}'.format(index))
-                    if not isinstance(node.val, numbers.Number):
+                    if not  _is_sortable(node.val):
                         raise NodeValueError(
-                            'invalid node value at index {}'.format(index))
+                            'unsortable node value at index {}'.format(index))
                     if node.left is not None or node.right is not None:
                         has_more_nodes = True
                     visited.add(node)
