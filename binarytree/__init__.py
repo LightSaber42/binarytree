@@ -165,7 +165,7 @@ def _generate_random_node_values(height):
     return node_values
 
 
-def _build_tree_string(root, curr_index, index=False, delimiter='-'):
+def _build_tree_string(root, curr_index, index=False, delimiter='-', str_func=str):
     """Recursively walk down the binary tree and build a pretty-print string.
 
     In each recursive call, a "box" of characters visually representing the
@@ -199,17 +199,17 @@ def _build_tree_string(root, curr_index, index=False, delimiter='-'):
     line1 = []
     line2 = []
     if index:
-        node_repr = '{}{}{}'.format(curr_index, delimiter, root.val)
+        node_repr = '{}{}{}'.format(curr_index, delimiter, str_func(root.val))
     else:
-        node_repr = str(root.val)
+        node_repr = str_func(root.val)
 
     new_root_width = gap_size = len(node_repr)
 
     # Get the left and right sub-boxes, their widths, and root repr positions
     l_box, l_box_width, l_root_start, l_root_end = \
-        _build_tree_string(root.left, 2 * curr_index + 1, index, delimiter)
+        _build_tree_string(root.left, 2 * curr_index + 1, index, delimiter, str_func=str_func)
     r_box, r_box_width, r_root_start, r_root_end = \
-        _build_tree_string(root.right, 2 * curr_index + 2, index, delimiter)
+        _build_tree_string(root.right, 2 * curr_index + 2, index, delimiter, str_func=str_func)
 
     # Draw the branch connecting the current root node to the left sub-box
     # Pad the line with whitespaces where necessary
